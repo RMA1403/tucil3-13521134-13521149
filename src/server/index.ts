@@ -1,3 +1,4 @@
+// const { handleUCS } = require("./controllers/UniformCostSearch");
 const { handleUCS } = require("./controllers/UniformCostSearch");
 const express = require("express");
 
