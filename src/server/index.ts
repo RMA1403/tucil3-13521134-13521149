@@ -9,3 +9,5 @@ app.route("/").get(handleUCS);
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
+
+export {};
