@@ -16,6 +16,8 @@ function fileReader(fileData: string): Graph {
     graph.addEdge(Number(temp[0]), Number(temp[1]), 10, temp[2]);
   }
 
+  console.log(inputFile);
+
   return graph;
 }
 
