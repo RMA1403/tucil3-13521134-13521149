@@ -1,3 +1,5 @@
+import { ElementDefinition } from "cytoscape";
+
 export type coordinate = {
   long: number;
   lat: number;
@@ -52,5 +54,34 @@ export default class Graph {
   public addEdge(v1: number, v2: number, weight: number, street: string) {
     this.adjMatrix[v1][v2] = { weight, street };
     this.adjMatrix[v2][v1] = { weight, street };
+  }
+
+  public generateCytoElements(): ElementDefinition[] {
+    let elements: ElementDefinition[] = [];
+
+    for (let idx = 0; idx < this.getVertexCount(); idx++) {
+      elements.push({
+        group: "nodes",
+        data: {
+          id: idx.toString(),
+        },
+      });
+    }
+
+    for (let i = 0; i < this.vertexCount; i++) {
+      for (let j = i; j < this.vertexCount; j++) {
+        if (this.getWeight(i, j) !== 0)
+          elements.push({
+            group: "edges",
+            data: {
+              id: i.toString() + "-" + j.toString(),
+              source: i.toString(),
+              target: j.toString(),
+            },
+          });
+      }
+    }
+
+    return elements;
   }
 }

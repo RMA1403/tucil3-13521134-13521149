@@ -8,9 +8,9 @@
 (3.1,5.1)
 (-4,-5)
 
-0 1 Melati
-0 2 Mawar
-2 3 Jambu
-4 6 Manggis
-5 6 Mangga
-1 7 Belimbing
+0 1 5 Melati
+0 2 3 Mawar
+2 3 4 Jambu
+4 6 5 Manggis
+5 6 12 Mangga
+1 7 10 Belimbing
