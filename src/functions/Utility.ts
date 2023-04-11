@@ -1,4 +1,3 @@
-import { readFile } from "fs/promises";
 import Graph, { coordinate } from "../classes/Graph";
 
 function fileReader(fileData: string): Graph {
@@ -16,8 +15,6 @@ function fileReader(fileData: string): Graph {
     const temp: string[] = inputFile[i].split(" ");
     graph.addEdge(Number(temp[0]), Number(temp[1]), Number(temp[2]), temp[3]);
   }
-
-  console.log(inputFile);
 
   return graph;
 }
