@@ -54,7 +54,7 @@ export default function Dropzone({
   return (
     <div
       className={clsx(
-        "flex items-center justify-center w-full border-2 border-[#A1A6B4] border-dashed rounded-xl hover:bg-gray-100",
+        "flex items-center justify-center w-full border-2 border-[#A1A6B4] border-dashed rounded-xl",
         dragActive && "bg-gray-100"
       )}
       onDragEnter={handleDrag}
