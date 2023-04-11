@@ -10,15 +10,15 @@ type CytoGraphProps = {
 }
 
 export default function CytoGraph({ graph, classname }: CytoGraphProps): JSX.Element {
-    cytoscape.use(fcose);
 
-    const fcoseLayout = {
-        name: "fcose",
-        animate: false
-    }
 
     useEffect(() => {
         const elements = graph.generateCytoElements();
+        const fcoseLayout = {
+            name: "fcose",
+            animate: false
+        }
+    
         const cy = cytoscape({
             container: document.getElementById("cy-container"), // container to render in
 
