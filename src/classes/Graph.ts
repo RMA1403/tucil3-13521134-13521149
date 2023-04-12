@@ -77,7 +77,7 @@ export default class Graph {
               id: i.toString() + "-" + j.toString(),
               source: i.toString(),
               target: j.toString(),
-              label: this.getStreetName(i, j),
+              label: this.getWeight(i, j),
             },
           });
       }

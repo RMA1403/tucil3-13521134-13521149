@@ -22,10 +22,22 @@ export default function CytoGraph({
       const source = graphPath[idx - 1];
       const target = graphPath[idx];
 
-      if (cyto && cyto.edges().map((x) => x.id()).includes(`${target + "-" + source}`))
+      if (
+        cyto &&
+        cyto
+          .edges()
+          .map((x) => x.id())
+          .includes(`${target + "-" + source}`)
+      )
         cyto.remove(`#${target + "-" + source}`);
-      
-      if (cyto && cyto.edges().map((x) => x.id()).includes(`${source + "-" + target}`))
+
+      if (
+        cyto &&
+        cyto
+          .edges()
+          .map((x) => x.id())
+          .includes(`${source + "-" + target}`)
+      )
         cyto.remove(`#${source + "-" + target}`);
 
       if (cyto)
@@ -35,6 +47,7 @@ export default function CytoGraph({
             id: `${source + "-" + target}`,
             source: source.toString(),
             target: target.toString(),
+            label: graph.getWeight(source, target),
           },
           classes: "directed",
         });
@@ -86,6 +99,17 @@ export default function CytoGraph({
           },
         },
         {
+          selector: "edge[label]",
+          style: {
+            label: "data(label)",
+            "font-size": "0.6em",
+            "text-valign": "top",
+            "text-halign": "center",
+            "text-background-color": "#fff",
+            "text-background-opacity": 1,
+          },
+        },
+        {
           selector: ".directed",
           style: {
             "target-arrow-color": "#000",
@@ -97,7 +121,7 @@ export default function CytoGraph({
       layout: fcoseLayout,
       boxSelectionEnabled: false,
       userPanningEnabled: false,
-      userZoomingEnabled: false
+      userZoomingEnabled: false,
     });
 
     cy.fit();
@@ -108,7 +132,7 @@ export default function CytoGraph({
     if (cyto) {
       cyto.edges().removeClass("directed");
     }
-  }
+  };
 
   return <div className="w-full h-full" id="cy-container"></div>;
 }
