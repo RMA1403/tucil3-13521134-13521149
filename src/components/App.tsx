@@ -8,7 +8,6 @@ import Dropdown, { DropdownOptions } from "./Dropdown";
 import Map from "../api/Leaflet";
 import { coordinate, mapEdge } from "../classes/Graph";
 
-// var cytoscape = require("cytoscape");
 import Button from "./Button";
 import uniformCostSearch from "../functions/UniformCostSearch";
 import aStar from "../functions/AStar";
@@ -40,7 +39,6 @@ export default function App(): JSX.Element {
     setNodeOptions(newNodeOptions);
   }, [graph]);
 
-  // TODO: error message
   const handleFileChange = (file: File) => {
     if (!file.name.endsWith(".txt")) {
       setFileErrorMsg("Files should end with .txt!");
@@ -144,18 +142,29 @@ export default function App(): JSX.Element {
         </div>
 
         <div className="pt-[74px] px-5 flex-1">
-          <h2 className="text-[#000100] mb-4 font-black text-3xl">
-            File Input
-          </h2>
-          <Dropzone id="file-dropzone" onFileChange={handleFileChange} />
-          <p
-            className={clsx(
-              "text-sm text-red-600",
-              fileErrorMsg === "" && "invisible"
-            )}
-          >
-            {fileErrorMsg} Please choose another file.
-          </p>
+          {isGmap ? (
+            <>
+              <h2 className="text-[#000100] mb-4 font-black text-3xl">
+                Input Markers
+              </h2>
+              <Button onClick={() => {}}>Set as Graph</Button>
+            </>
+          ) : (
+            <>
+              <h2 className="text-[#000100] mb-4 font-black text-3xl">
+                File Input
+              </h2>
+              <Dropzone id="file-dropzone" onFileChange={handleFileChange} />
+              <p
+                className={clsx(
+                  "text-sm text-red-600",
+                  fileErrorMsg === "" && "invisible"
+                )}
+              >
+                {fileErrorMsg} Please choose another file.
+              </p>
+            </>
+          )}
           <div className="flex flex-col mt-4 gap-3">
             <Dropdown
               label="Source Node"
