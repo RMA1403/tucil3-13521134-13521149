@@ -3,9 +3,9 @@ import Graph, { coordinate, mapEdge } from "../classes/Graph";
 function fileReader(fileData: string): Graph {
   const inputFile: string[] = fileData.split("\n");
 
-  if (isNaN(parseFloat(inputFile[0]))) throw Error("Invalid first line!");
+  if (isNaN(parseInt(inputFile[0]))) throw Error("Invalid first line!");
 
-  const graph: Graph = new Graph(Number(inputFile[0]));
+  const graph: Graph = new Graph(parseInt(inputFile[0]));
 
   for (let i = 1; i <= graph.getVertexCount(); i++) {
     const temp: string[] = inputFile[i]
@@ -18,7 +18,7 @@ function fileReader(fileData: string): Graph {
     )
       throw Error("Invalid coordinates!");
 
-    graph.addVertex(i - 1, Number(temp[0]), Number(temp[1]));
+    graph.addVertex(i - 1, parseFloat(temp[0]), parseFloat(temp[1]));
   }
 
   for (let i = graph.getVertexCount() + 2; i < inputFile.length; i++) {
@@ -32,7 +32,7 @@ function fileReader(fileData: string): Graph {
     )
       throw Error("Invalid street!");
 
-    graph.addEdge(Number(temp[0]), Number(temp[1]), Number(temp[2]), temp[3]);
+    graph.addEdge(parseFloat(temp[0]), parseFloat(temp[1]), parseFloat(temp[2]), temp[3]);
   }
 
   return graph;
