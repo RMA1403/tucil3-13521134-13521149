@@ -39,5 +39,5 @@ export default function uniformCostSearch(
     visited[curr.vertex] = true;
   }
 
-  return [0, [start]];
+  throw Error("Path to destination not found!");
 }

@@ -59,10 +59,6 @@ export default function App(): JSX.Element {
   };
 
   const handleSearch = () => {
-    if (isGmap) {
-      setGraph(graphFromList(nodeList, edgeList));
-    }
-
     let dist = 0;
     let path: number[] = [];
 
@@ -147,7 +143,11 @@ export default function App(): JSX.Element {
               <h2 className="text-[#000100] mb-4 font-black text-3xl">
                 Input Markers
               </h2>
-              <Button onClick={() => {}}>Set as Graph</Button>
+              <Button
+                onClick={() => setGraph(graphFromList(nodeList, edgeList))}
+              >
+                Set as Graph
+              </Button>
             </>
           ) : (
             <>

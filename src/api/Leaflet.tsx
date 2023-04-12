@@ -5,6 +5,7 @@ import {
   TileLayer,
   useMapEvents,
   Marker,
+  Tooltip,
   Polyline,
 } from "react-leaflet";
 import { coordinate, mapEdge } from "../classes/Graph";
@@ -67,7 +68,11 @@ function Markers({ addNode, addEdge }: markerProps): JSX.Element {
               setCurrIdx(idx);
             },
           }}
-        ></Marker>
+        >
+          <Tooltip direction="right" offset={[0, 0]} opacity={1} permanent>
+            {idx === 0 ? "0" : idx}
+          </Tooltip>
+        </Marker>
       ))}
       {polyArr.map((opt, idx) => (
         <Polyline positions={opt} key={idx} />
