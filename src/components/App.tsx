@@ -16,12 +16,14 @@ export default function App(): JSX.Element {
   const [nodeOptions, setNodeOptions] = useState<DropdownOptions[]>([
     { value: "none", text: "None Selected" },
   ]);
-  const [sourceNode, setSourceNode] = useState<string>('none');
-  const [destNode, setDestNode] = useState<string>('none');
+  const [sourceNode, setSourceNode] = useState<string>("none");
+  const [destNode, setDestNode] = useState<string>("none");
   const [pathMethod, setPathMethod] = useState<string>("A*");
   const [graphPath, setGraphPath] = useState<number[]>([]);
   const [pathDist, setPathDist] = useState<number>(0);
   const [pathStr, setPathStr] = useState<string>("");
+  const [fileErrorMsg, setFileErrorMsg] = useState<string>("");
+  const [searchErrorMsg, setSearchErrorMsg] = useState<string>("");
 
   useEffect(() => {
     const newNodeOptions = [{ value: "none", text: "None Selected" }];
@@ -33,13 +35,21 @@ export default function App(): JSX.Element {
     setNodeOptions(newNodeOptions);
   }, [graph]);
 
-  // TODO: error message
   const handleFileChange = (file: File) => {
+    if (!file.name.endsWith(".txt")) {
+      setFileErrorMsg("Files should end with .txt!");
+      return;
+    }
     const reader = new FileReader();
 
     reader.onload = () => {
-      setFileContent(reader.result as string);
-      setGraph(fileReader(reader.result as string));
+      try {
+        setFileContent(reader.result as string);
+        setGraph(fileReader(reader.result as string));
+        setFileErrorMsg("");
+      } catch (error: any) {
+        setFileErrorMsg(error.message);
+      }
     };
 
     reader.readAsText(file);
@@ -47,23 +57,26 @@ export default function App(): JSX.Element {
 
   const handleSearch = () => {
     let dist = 0;
-    let path: number[] = []
+    let path: number[] = [];
     if (pathMethod === "A*" && graph)
       [dist, path] = aStar(parseInt(sourceNode), parseInt(destNode), graph);
     if (pathMethod === "UCS" && graph)
-      [dist, path] = uniformCostSearch(parseInt(sourceNode), parseInt(destNode), graph);
+      [dist, path] = uniformCostSearch(
+        parseInt(sourceNode),
+        parseInt(destNode),
+        graph
+      );
     setGraphPath(path);
     setPathDist(dist);
 
     let str = "";
     for (let idx = 1; idx < path.length; idx++) {
-      str += graph?.getStreetName(path[idx-1], path[idx])
-      if (idx !== path.length - 1)
-        str += " - ";
+      str += graph?.getStreetName(path[idx - 1], path[idx]);
+      if (idx !== path.length - 1) str += " - ";
     }
 
     setPathStr(str);
-  }
+  };
 
   return (
     <main>
@@ -101,28 +114,48 @@ export default function App(): JSX.Element {
             File Input
           </h2>
           <Dropzone id="file-dropzone" onFileChange={handleFileChange} />
-          <div className="flex flex-col mt-6 gap-3">
-            <Dropdown label="Source Node" value={sourceNode} onChange={(e) => {setSourceNode(e.target.value)}} options={nodeOptions} />
-            <Dropdown label="Destination Node" value={destNode} onChange={(e) => {setDestNode(e.target.value)}} options={nodeOptions} />
-            <Dropdown label="Pathfinding Method" value={pathMethod} onChange={(e) => {setPathMethod(e.target.value)}} options={[
-              {value: "A*", text: "A*"},
-              {value: "UCS", text: "UCS"},
-            ]} />
+          <p className={clsx("text-sm text-red-600", fileErrorMsg === ""  && "invisible")}>{fileErrorMsg} Please choose another file.</p>
+          <div className="flex flex-col mt-4 gap-3">
+            <Dropdown
+              label="Source Node"
+              value={sourceNode}
+              onChange={(e) => {
+                setSourceNode(e.target.value);
+              }}
+              options={nodeOptions}
+            />
+            <Dropdown
+              label="Destination Node"
+              value={destNode}
+              onChange={(e) => {
+                setDestNode(e.target.value);
+              }}
+              options={nodeOptions}
+            />
+            <Dropdown
+              label="Pathfinding Method"
+              value={pathMethod}
+              onChange={(e) => {
+                setPathMethod(e.target.value);
+              }}
+              options={[
+                { value: "A*", text: "A*" },
+                { value: "UCS", text: "UCS" },
+              ]}
+            />
           </div>
           <div className="flex mt-5">
             <Button onClick={handleSearch}>Start Search</Button>
           </div>
-          { graphPath.length > 0 &&
+          {graphPath.length > 0 && (
             <div className="text-[#000100] text-xl  my-4">
-              <h2 className="font-black text-3xl">
-                Result
-              </h2>
+              <h2 className="font-black text-3xl">Result</h2>
               <h4 className="font-bold mt-4">Shortest Path</h4>
               <p>{pathStr}</p>
               <h4 className="font-bold mt-4">Distance:</h4>
               <p>{pathDist}</p>
             </div>
-          }
+          )}
         </div>
       </div>
     </main>

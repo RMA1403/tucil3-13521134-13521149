@@ -82,6 +82,7 @@ export default function Dropzone({
         ref={inputRef}
         type="file"
         className="hidden"
+        accept=".txt"
         {...props}
       />
     </div>
