@@ -141,7 +141,7 @@ export default function App(): JSX.Element {
                 addEdge={(edge: mapEdge) => setEdgeList([...edgeList, edge])}
               />
             ) : (
-              graph && <CytoGraph graph={graph} />
+              graph && <CytoGraph graphPath={graphPath} graph={graph} />
             )}
           </div>
         </div>

@@ -13,7 +13,6 @@ export default function uniformCostSearch(
 
   const prioQueue: queueEl[] = [];
   const visited: boolean[] = new Array(graph.getVertexCount()).fill(false);
-
   prioQueue.push({ cost: 0, vertex: start, path: [start] });
   while (prioQueue.length > 0) {
     prioQueue.sort((a, b) => b.cost - a.cost);
@@ -34,10 +33,10 @@ export default function uniformCostSearch(
             vertex: i,
             path: curr.path.concat([i]),
           });
-          visited[i] = true;
         }
       }
     }
+    visited[curr.vertex] = true;
   }
 
   return [0, [start]];
