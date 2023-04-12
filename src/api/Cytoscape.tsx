@@ -95,8 +95,9 @@ export default function CytoGraph({
       ],
 
       layout: fcoseLayout,
+      boxSelectionEnabled: false,
       userPanningEnabled: false,
-      userZoomingEnabled: false,
+      userZoomingEnabled: false
     });
 
     cy.fit();

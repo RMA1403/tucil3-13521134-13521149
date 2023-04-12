@@ -20,6 +20,8 @@ export default function App(): JSX.Element {
   const [destNode, setDestNode] = useState<string>('none');
   const [pathMethod, setPathMethod] = useState<string>("A*");
   const [graphPath, setGraphPath] = useState<number[]>([]);
+  const [pathDist, setPathDist] = useState<number>(0);
+  const [pathStr, setPathStr] = useState<string>("");
 
   useEffect(() => {
     const newNodeOptions = [{ value: "none", text: "None Selected" }];
@@ -44,14 +46,23 @@ export default function App(): JSX.Element {
   };
 
   const handleSearch = () => {
-    let dist;
+    let dist = 0;
     let path: number[] = []
     if (pathMethod === "A*" && graph)
       [dist, path] = aStar(parseInt(sourceNode), parseInt(destNode), graph);
     if (pathMethod === "UCS" && graph)
       [dist, path] = uniformCostSearch(parseInt(sourceNode), parseInt(destNode), graph);
-    console.log(path);
     setGraphPath(path);
+    setPathDist(dist);
+
+    let str = "";
+    for (let idx = 1; idx < path.length; idx++) {
+      str += graph?.getStreetName(path[idx-1], path[idx])
+      if (idx !== path.length - 1)
+        str += " - ";
+    }
+
+    setPathStr(str);
   }
 
   return (
@@ -101,6 +112,17 @@ export default function App(): JSX.Element {
           <div className="flex mt-5">
             <Button onClick={handleSearch}>Start Search</Button>
           </div>
+          { graphPath.length > 0 &&
+            <div className="text-[#000100] text-xl  my-4">
+              <h2 className="font-black text-3xl">
+                Result
+              </h2>
+              <h4 className="font-bold mt-4">Shortest Path</h4>
+              <p>{pathStr}</p>
+              <h4 className="font-bold mt-4">Distance:</h4>
+              <p>{pathDist}</p>
+            </div>
+          }
         </div>
       </div>
     </main>
