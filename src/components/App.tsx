@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fileReader } from "../functions/Utility";
 import CytoGraph from "../api/Cytoscape";
 import clsx from "clsx";
 import Graph from "../classes/Graph";
+import Dropzone from "./Dropzone";
+import Dropdown, { DropdownOptions } from "./Dropdown";
 
 // var cytoscape = require("cytoscape");
 
@@ -10,13 +12,25 @@ export default function App(): JSX.Element {
   const [isGmap, setGmap] = useState<boolean>(false);
   const [fileContent, setFileContent] = useState<string>("");
   const [graph, setGraph] = useState<Graph | null>(null);
+  const [nodeOptions, setNodeOptions] = useState<DropdownOptions[]>([
+    { value: "none", text: "None Selected" },
+  ]);
+  const [sourceNode, setSourceNode] = useState<string>("none");
+  const [destNode, setDestNode] = useState<string>("none");
+  const [pathMethod, setPathMethod] = useState<string>("A*");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-  };
+  useEffect(() => {
+    const newNodeOptions = [{ value: "none", text: "None Selected" }];
+    if (graph) {
+      for (let idx = 0; idx < graph.getVertexCount(); idx++) {
+        newNodeOptions.push({ value: idx.toString(), text: `Node ${idx}` });
+      }
+    }
+    setNodeOptions(newNodeOptions);
+  }, [graph]);
 
-  const handleFile = (e: React.FormEvent) => {
-    const file = ((e.target as HTMLInputElement).files as FileList)[0];
+  // TODO: error message
+  const handleFileChange = (file: File) => {
     const reader = new FileReader();
 
     reader.onload = () => {
@@ -59,23 +73,38 @@ export default function App(): JSX.Element {
         </div>
 
         <div className="pt-[74px] px-5 flex-1">
-          <h2 className="text-[#000100] font-black text-3xl">File Input</h2>
-          <div className="w-[27vw] h-[15.6vh] mt-4 border-dashed border-2 border-[#A1A6B4] flex justify-center items-center">
-            <label
-              htmlFor="file-input"
-              className="block py-2 rounded-md text-center bg-[#94C5CC] w-[120px] hover:cursor-pointer"
-            >
-              Choose File
-            </label>
-            <input
-              id="file-input"
-              type="file"
-              className=""
-              onChange={handleFile}
+          <h2 className="text-[#000100] mb-4 font-black text-3xl">
+            File Input
+          </h2>
+          <Dropzone id="file-dropzone" onFileChange={handleFileChange} />
+          <div className="flex flex-col mt-6 gap-3">
+            <Dropdown
+              label="Source Node"
+              value={sourceNode}
+              onChange={(e) => {
+                setSourceNode(e.target.value);
+              }}
+              options={nodeOptions}
             />
-            <button type="submit" onClick={handleSubmit}>
-              Start
-            </button>
+            <Dropdown
+              label="Destination Node"
+              value={destNode}
+              onChange={(e) => {
+                setDestNode(e.target.value);
+              }}
+              options={nodeOptions}
+            />
+            <Dropdown
+              label="Pathfinding Method"
+              value={pathMethod}
+              onChange={(e) => {
+                setPathMethod(e.target.value);
+              }}
+              options={[
+                { value: "A*", text: "A*" },
+                { value: "UCS", text: "UCS" },
+              ]}
+            />
           </div>
         </div>
       </div>

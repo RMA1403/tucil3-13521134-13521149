@@ -14,6 +14,8 @@ export default function CytoGraph({
   classname,
 }: CytoGraphProps): JSX.Element {
   useEffect(() => {
+    cytoscape.use(fcose);
+
     const elements = graph.generateCytoElements();
     const fcoseLayout = {
       name: "fcose",
