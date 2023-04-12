@@ -7,18 +7,11 @@ let fcose = require("cytoscape-fcose");
 type CytoGraphProps = {
   classname?: string;
   graph: Graph;
-<<<<<<< HEAD
-=======
   graphPath: number[];
->>>>>>> feat/frontend
 };
 
 export default function CytoGraph({
   graph,
-<<<<<<< HEAD
-  classname,
-}: CytoGraphProps): JSX.Element {
-=======
   graphPath,
 }: CytoGraphProps): JSX.Element {
   const [cyto, setCyto] = useState<cytoscape.Core>();
@@ -63,7 +56,6 @@ export default function CytoGraph({
     if (graphPath.length > 1 && cyto) cyto.fit();
   }, [graphPath]);
 
->>>>>>> feat/frontend
   useEffect(() => {
     cytoscape.use(fcose);
 
@@ -106,11 +98,6 @@ export default function CytoGraph({
             "curve-style": "bezier",
           },
         },
-<<<<<<< HEAD
-      ],
-
-      layout: fcoseLayout,
-=======
         {
           selector: "edge[label]",
           style: {
@@ -133,16 +120,11 @@ export default function CytoGraph({
 
       layout: fcoseLayout,
       boxSelectionEnabled: false,
->>>>>>> feat/frontend
       userPanningEnabled: false,
       userZoomingEnabled: false,
     });
 
     cy.fit();
-<<<<<<< HEAD
-  }, [graph]);
-
-=======
     setCyto(cy);
   }, [graph]);
 
@@ -152,6 +134,5 @@ export default function CytoGraph({
     }
   };
 
->>>>>>> feat/frontend
   return <div className="w-full h-full" id="cy-container"></div>;
 }
