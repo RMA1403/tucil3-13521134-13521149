@@ -1,46 +1,88 @@
-# Getting Started with Create React App
+## Description
+Program ini dibuat untuk menyelesaikan persoalan *Shortest Path Problem* menggunakan algoritma UCS dan A*. Program ini berupa single page web-application, yang menerima masukan berupa file atau masukan dari peta interaktif.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Technologies Used
+- React
+- Tailwind
+- Cytoscape
+- Leaflet
 
-## Available Scripts
+## How to Run:
+### Set-up
+- Clone repository dengan ini menjalankan `git clone git@github.com:RMA1403/tucil3-13521134-13521149.git` pada terminal.
+- Masuk ke dalam directory ini dengan command `cd tucil3-13521134-13521149`.
+- Install node modules dengan menjalankan `npm i` pada directory root project ini.
 
-In the project directory, you can run:
+### Run
+- Jalankan `npm start` untuk menyalakan program.
+- Buka browser dan masuk ke `localhost:3000` untuk mengakses halaman program.
+- Pilih file konfigurasi graf atau gunakan mode map untuk memasukkan graf ke dalam program.
 
-### `npm start`
+## Configuration File Format
+Contoh file konfigurasi adalah sebagai berikut:
+```
+8
+(1,3)
+(4.1,0)
+(-1,2)
+(-3,-5.2)
+(8,9.5)
+(9.2,-4)
+(3.1,5.1)
+(-4,-5)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+0 1 5 Melati
+0 2 3 Mawar
+2 3 4 Jambu
+4 6 5 Manggis
+5 6 12 Mangga
+1 7 10 Belimbing
+```
+**Keterangan:**
+- Baris pertama berisi nilai n, yaitu jumlah simpul yang akan ada dalam graph.
+- Untuk n baris berikutnya, setiap baris mengikuti format `(long, lat)` dengan `long` dan `lat` yang menjelaskan posisi koordinat simpul tersebut.
+- Untuk n baris berikutnya, setiap baris mengikuti format `i j w name` dengan `i` dan `j` menjelaskan simpul yang terhubung dengan sisi tersebut, `w` menjelaskan bobot dari simpul tersebut, dan `name` menjelaskan nama dari simpul/jalan tersebut.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Author:
+- Rinaldy Adin 13521134
+- Rava Maulana Azzikri 13521149
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Struktur program
+```
+.
+├── README.md
+├── package-lock.json
+├── package.json
+├── public
+│   ├── favicon.ico
+│   ├── index.html
+│   ├── logo192.png
+│   ├── logo512.png
+│   ├── manifest.json
+│   └── robots.txt
+├── src
+│   ├── api
+│   │   ├── Cytoscape.tsx
+│   │   └── Leaflet.tsx
+│   ├── classes
+│   │   └── Graph.ts
+│   ├── components
+│   │   ├── App.tsx
+│   │   ├── Button.tsx
+│   │   ├── Dropdown.tsx
+│   │   └── Dropzone.tsx
+│   ├── functions
+│   │   ├── AStar.ts
+│   │   ├── UniformCostSearch.ts
+│   │   └── Utility.ts
+│   ├── index.css
+│   ├── index.tsx
+│   ├── logo.svg
+│   ├── react-app-env.d.ts
+│   └── tests
+│       ├── itb.txt
+│       ├── rumah.txt
+│       └── test.txt
+├── tailwind.config.js
+└── tsconfig.json
+```
