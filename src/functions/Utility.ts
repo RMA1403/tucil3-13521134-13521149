@@ -23,16 +23,29 @@ function euclideanDistance(c1: coordinate, c2: coordinate) {
   return Math.sqrt((c2.lat - c1.lat) ** 2 + (c2.long - c1.long) ** 2);
 }
 
-function enqueuePQ(pq: Object[], x: Object): void {
+type PQElement = {
+  f_score: number;
+  node: number;
+}
+
+function enqueuePQ(pq: PQElement[], x: PQElement): void {
   let idx = 0;
-  while (idx < pq.length && pq[idx] < x) idx++;
+  while (idx < pq.length && pq[idx].f_score < x.f_score) idx++;
   pq.splice(idx, 0, x);
 }
 
-function dequeuePQ(pq: Object[]): Object {
-  const x = pq[0];
+function dequeuePQ(pq: PQElement[]): Object {
+  const x = pq[0].node;
   pq.splice(0, 1);
   return x;
 }
 
-export { fileReader, euclideanDistance, enqueuePQ, dequeuePQ };
+function findNodeIdxPQ(pq: PQElement[], node: number): number {
+  for (let idx = 0; idx < pq.length; idx++) {
+    if (pq[idx].node === node)
+      return idx;
+  }
+  return -1;
+}
+
+export { fileReader, euclideanDistance, enqueuePQ, dequeuePQ, findNodeIdxPQ, type PQElement };
