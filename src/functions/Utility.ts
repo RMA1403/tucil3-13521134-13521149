@@ -1,32 +1,57 @@
-import Graph, { coordinate } from "../classes/Graph";
+import Graph, { coordinate, mapEdge } from "../classes/Graph";
 
 function fileReader(fileData: string): Graph {
   const inputFile: string[] = fileData.split("\n");
 
-  if (isNaN(parseFloat(inputFile[0])))
-    throw Error("Invalid first line!");
-  
-    const graph: Graph = new Graph(Number(inputFile[0]));
+  if (isNaN(parseFloat(inputFile[0]))) throw Error("Invalid first line!");
+
+  const graph: Graph = new Graph(Number(inputFile[0]));
 
   for (let i = 1; i <= graph.getVertexCount(); i++) {
     const temp: string[] = inputFile[i]
       .slice(1, inputFile[i].length - 1)
       .split(",");
-      if (temp.length !== 2 || isNaN(parseFloat(temp[0])) || isNaN(parseFloat(temp[1])))
-        throw Error("Invalid coordinates!");
+    if (
+      temp.length !== 2 ||
+      isNaN(parseFloat(temp[0])) ||
+      isNaN(parseFloat(temp[1]))
+    )
+      throw Error("Invalid coordinates!");
 
-      graph.addVertex(i - 1, Number(temp[0]), Number(temp[1]));
+    graph.addVertex(i - 1, Number(temp[0]), Number(temp[1]));
   }
 
   for (let i = graph.getVertexCount() + 2; i < inputFile.length; i++) {
     const temp: string[] = inputFile[i].split(" ");
 
-    if (temp.length !== 4 || isNaN(parseFloat(temp[0])) || isNaN(parseFloat(temp[1])) || isNaN(parseFloat(temp[2])))
-        throw Error("Invalid street!");
+    if (
+      temp.length !== 4 ||
+      isNaN(parseFloat(temp[0])) ||
+      isNaN(parseFloat(temp[1])) ||
+      isNaN(parseFloat(temp[2]))
+    )
+      throw Error("Invalid street!");
 
     graph.addEdge(Number(temp[0]), Number(temp[1]), Number(temp[2]), temp[3]);
   }
 
+  return graph;
+}
+
+function graphFromList(nodeList: coordinate[], edgeList: mapEdge[]): Graph {
+  const graph: Graph = new Graph(nodeList.length);
+  for (let i = 0; i < nodeList.length; i++) {
+    graph.addVertex(i, nodeList[i].long, nodeList[i].lat);
+  }
+  for (let i = 0; i < edgeList.length; i++) {
+    const curr: mapEdge = edgeList[i];
+    graph.addEdge(
+      curr.source,
+      curr.dest,
+      euclideanDistance(curr.sourceCoord, curr.destCoord),
+      String(curr.source) + String(curr.dest)
+    );
+  }
   return graph;
 }
 
@@ -37,7 +62,7 @@ function euclideanDistance(c1: coordinate, c2: coordinate) {
 type PQElement = {
   f_score: number;
   node: number;
-}
+};
 
 function enqueuePQ(pq: PQElement[], x: PQElement): void {
   let idx = 0;
@@ -53,10 +78,17 @@ function dequeuePQ(pq: PQElement[]): Object {
 
 function findNodeIdxPQ(pq: PQElement[], node: number): number {
   for (let idx = 0; idx < pq.length; idx++) {
-    if (pq[idx].node === node)
-      return idx;
+    if (pq[idx].node === node) return idx;
   }
   return -1;
 }
 
-export { fileReader, euclideanDistance, enqueuePQ, dequeuePQ, findNodeIdxPQ, type PQElement };
+export {
+  fileReader,
+  euclideanDistance,
+  enqueuePQ,
+  dequeuePQ,
+  findNodeIdxPQ,
+  type PQElement,
+  graphFromList,
+};

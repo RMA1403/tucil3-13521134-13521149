@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fileReader } from "../functions/Utility";
+import { fileReader, graphFromList } from "../functions/Utility";
 import CytoGraph from "../api/Cytoscape";
 import clsx from "clsx";
 import Graph from "../classes/Graph";
@@ -40,14 +40,6 @@ export default function App(): JSX.Element {
     setNodeOptions(newNodeOptions);
   }, [graph]);
 
-  useEffect(() => {
-    console.log(nodeList);
-  }, [nodeList]);
-
-  useEffect(() => {
-    console.log(edgeList);
-  }, [edgeList]);
-
   // TODO: error message
   const handleFileChange = (file: File) => {
     if (!file.name.endsWith(".txt")) {
@@ -69,6 +61,10 @@ export default function App(): JSX.Element {
   };
 
   const handleSearch = () => {
+    if (isGmap) {
+      setGraph(graphFromList(nodeList, edgeList));
+    }
+
     let dist = 0;
     let path: number[] = [];
 
@@ -115,6 +111,7 @@ export default function App(): JSX.Element {
                 setGmap(!isGmap);
                 setEdgeList([]);
                 setNodeList([]);
+                setGraph(null);
               }}
               className={clsx(
                 "w-[74px] h-[42px] rounded-[35px] border-2 border-[#79747E] relative",
