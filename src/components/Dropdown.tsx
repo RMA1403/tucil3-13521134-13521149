@@ -30,7 +30,7 @@ export default function Dropdown({
         {...props}
       >
         {options.map(({ value, text }) => (
-          <option value={value}>{text}</option>
+          <option key={`option-${value}`} value={value}>{text}</option>
         ))}
       </select>
     </div>

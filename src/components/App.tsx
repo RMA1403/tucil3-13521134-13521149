@@ -5,8 +5,9 @@ import clsx from "clsx";
 import Graph from "../classes/Graph";
 import Dropzone from "./Dropzone";
 import Dropdown, { DropdownOptions } from "./Dropdown";
-
-// var cytoscape = require("cytoscape");
+import Button from "./Button";
+import uniformCostSearch from "../functions/UniformCostSearch";
+import aStar from "../functions/AStar";
 
 export default function App(): JSX.Element {
   const [isGmap, setGmap] = useState<boolean>(false);
@@ -18,6 +19,7 @@ export default function App(): JSX.Element {
   const [sourceNode, setSourceNode] = useState<string>('none');
   const [destNode, setDestNode] = useState<string>('none');
   const [pathMethod, setPathMethod] = useState<string>("A*");
+  const [graphPath, setGraphPath] = useState<number[]>([]);
 
   useEffect(() => {
     const newNodeOptions = [{ value: "none", text: "None Selected" }];
@@ -40,6 +42,17 @@ export default function App(): JSX.Element {
 
     reader.readAsText(file);
   };
+
+  const handleSearch = () => {
+    let dist;
+    let path: number[] = []
+    if (pathMethod === "A*" && graph)
+      [dist, path] = aStar(parseInt(sourceNode), parseInt(destNode), graph);
+    if (pathMethod === "UCS" && graph)
+      [dist, path] = uniformCostSearch(parseInt(sourceNode), parseInt(destNode), graph);
+    console.log(path);
+    setGraphPath(path);
+  }
 
   return (
     <main>
@@ -68,7 +81,7 @@ export default function App(): JSX.Element {
             </h2>
           </div>
           <div className="h-[71vh] w-[55vw] border-4 border-[#94C5CC] rounded-md mt-4 p-4">
-            {graph && <CytoGraph graph={graph} />}
+            {graph && <CytoGraph graphPath={graphPath} graph={graph} />}
           </div>
         </div>
 
@@ -84,6 +97,9 @@ export default function App(): JSX.Element {
               {value: "A*", text: "A*"},
               {value: "UCS", text: "UCS"},
             ]} />
+          </div>
+          <div className="flex mt-5">
+            <Button onClick={handleSearch}>Start Search</Button>
           </div>
         </div>
       </div>
