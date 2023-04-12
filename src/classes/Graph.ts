@@ -5,6 +5,13 @@ export type coordinate = {
   lat: number;
 };
 
+export type mapEdge = {
+  source: number;
+  dest: number;
+  sourceCoord: coordinate;
+  destCoord: coordinate;
+};
+
 type matrixEntry = {
   weight: number;
   street: string;

@@ -5,12 +5,13 @@ import clsx from "clsx";
 import Graph from "../classes/Graph";
 import Dropzone from "./Dropzone";
 import Dropdown, { DropdownOptions } from "./Dropdown";
+import Map from "../api/Leaflet";
+import { coordinate, mapEdge } from "../classes/Graph";
 
 // var cytoscape = require("cytoscape");
 
 export default function App(): JSX.Element {
   const [isGmap, setGmap] = useState<boolean>(false);
-  const [fileContent, setFileContent] = useState<string>("");
   const [graph, setGraph] = useState<Graph | null>(null);
   const [nodeOptions, setNodeOptions] = useState<DropdownOptions[]>([
     { value: "none", text: "None Selected" },
@@ -18,6 +19,8 @@ export default function App(): JSX.Element {
   const [sourceNode, setSourceNode] = useState<string>("none");
   const [destNode, setDestNode] = useState<string>("none");
   const [pathMethod, setPathMethod] = useState<string>("A*");
+  const [nodeList, setNodeList] = useState<coordinate[]>([]);
+  const [edgeList, setEdgeList] = useState<mapEdge[]>([]);
 
   useEffect(() => {
     const newNodeOptions = [{ value: "none", text: "None Selected" }];
@@ -29,12 +32,19 @@ export default function App(): JSX.Element {
     setNodeOptions(newNodeOptions);
   }, [graph]);
 
+  useEffect(() => {
+    console.log(nodeList);
+  }, [nodeList]);
+
+  useEffect(() => {
+    console.log(edgeList);
+  }, [edgeList]);
+
   // TODO: error message
   const handleFileChange = (file: File) => {
     const reader = new FileReader();
 
     reader.onload = () => {
-      setFileContent(reader.result as string);
       setGraph(fileReader(reader.result as string));
     };
 
@@ -50,7 +60,11 @@ export default function App(): JSX.Element {
         <div className="pt-4">
           <div className="flex items-center">
             <button
-              onClick={() => setGmap(!isGmap)}
+              onClick={() => {
+                setGmap(!isGmap);
+                setEdgeList([]);
+                setNodeList([]);
+              }}
               className={clsx(
                 "w-[74px] h-[42px] rounded-[35px] border-2 border-[#79747E] relative",
                 isGmap ? "bg-[#94C5CC]" : "bg-[#E0E9EC]"
@@ -68,7 +82,16 @@ export default function App(): JSX.Element {
             </h2>
           </div>
           <div className="h-[71vh] w-[55vw] border-4 border-[#94C5CC] rounded-md mt-4 p-4">
-            {isGmap ? null : graph && <CytoGraph graph={graph} />}
+            {isGmap ? (
+              <Map
+                addNode={(coord: coordinate) =>
+                  setNodeList([...nodeList, coord])
+                }
+                addEdge={(edge: mapEdge) => setEdgeList([...edgeList, edge])}
+              />
+            ) : (
+              graph && <CytoGraph graph={graph} />
+            )}
           </div>
         </div>
 
