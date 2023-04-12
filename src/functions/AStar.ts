@@ -36,7 +36,7 @@ export default function aStar(
 
   while (pq.length > 0) {
     let current: number = dequeuePQ(pq) as number;
-    if (current === end) return constructPath(start, end, parent_node, g_score);
+    if (current === end) return constructPath(start, end, parent_node, graph);
 
     for (let i = 0; i < graph.getVertexCount(); i++) {
       const edgeWeight: number = graph.getWeight(current, i);
