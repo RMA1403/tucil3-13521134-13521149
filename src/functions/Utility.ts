@@ -1,4 +1,3 @@
-import { readFile } from "fs/promises";
 import Graph, { coordinate } from "../classes/Graph";
 
 function fileReader(fileData: string): Graph {
