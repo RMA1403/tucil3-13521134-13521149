@@ -11,7 +11,6 @@ import aStar from "../functions/AStar";
 
 export default function App(): JSX.Element {
   const [isGmap, setGmap] = useState<boolean>(false);
-  const [fileContent, setFileContent] = useState<string>("");
   const [graph, setGraph] = useState<Graph | null>(null);
   const [nodeOptions, setNodeOptions] = useState<DropdownOptions[]>([
     { value: "none", text: "None Selected" },
@@ -44,7 +43,6 @@ export default function App(): JSX.Element {
 
     reader.onload = () => {
       try {
-        setFileContent(reader.result as string);
         setGraph(fileReader(reader.result as string));
         setFileErrorMsg("");
       } catch (error: any) {
@@ -58,14 +56,24 @@ export default function App(): JSX.Element {
   const handleSearch = () => {
     let dist = 0;
     let path: number[] = [];
-    if (pathMethod === "A*" && graph)
-      [dist, path] = aStar(parseInt(sourceNode), parseInt(destNode), graph);
-    if (pathMethod === "UCS" && graph)
-      [dist, path] = uniformCostSearch(
-        parseInt(sourceNode),
-        parseInt(destNode),
-        graph
-      );
+
+    try {
+      if (sourceNode === "none" || destNode === "none")
+        throw Error("Please set your source and destination nodes!");
+
+      if (pathMethod === "A*" && graph)
+        [dist, path] = aStar(parseInt(sourceNode), parseInt(destNode), graph);
+      if (pathMethod === "UCS" && graph)
+        [dist, path] = uniformCostSearch(
+          parseInt(sourceNode),
+          parseInt(destNode),
+          graph
+        );
+    } catch (error: any) {
+      setSearchErrorMsg(error.message);
+      return;
+    }
+
     setGraphPath(path);
     setPathDist(dist);
 
@@ -76,10 +84,11 @@ export default function App(): JSX.Element {
     }
 
     setPathStr(str);
+    setSearchErrorMsg("");
   };
 
   return (
-    <main>
+    <main className="pb-4">
       <div className="bg-[#94C5CC] w-full py-4 px-9">
         <h1 className="text-[#000100] font-black text-4xl">PathFinder</h1>
       </div>
@@ -114,7 +123,14 @@ export default function App(): JSX.Element {
             File Input
           </h2>
           <Dropzone id="file-dropzone" onFileChange={handleFileChange} />
-          <p className={clsx("text-sm text-red-600", fileErrorMsg === ""  && "invisible")}>{fileErrorMsg} Please choose another file.</p>
+          <p
+            className={clsx(
+              "text-sm text-red-600",
+              fileErrorMsg === "" && "invisible"
+            )}
+          >
+            {fileErrorMsg} Please choose another file.
+          </p>
           <div className="flex flex-col mt-4 gap-3">
             <Dropdown
               label="Source Node"
@@ -144,8 +160,12 @@ export default function App(): JSX.Element {
               ]}
             />
           </div>
-          <div className="flex mt-5">
+          <div className="flex mt-5 gap-2">
             <Button onClick={handleSearch}>Start Search</Button>
+            <p className={clsx(
+              "text-sm text-red-600 flex-1",
+              searchErrorMsg === "" && "invisible"
+            )}>{searchErrorMsg}</p>
           </div>
           {graphPath.length > 0 && (
             <div className="text-[#000100] text-xl  my-4">

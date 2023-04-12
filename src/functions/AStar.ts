@@ -58,5 +58,5 @@ export default function aStar(
     }
   }
 
-  return [-1, [start]];
+  throw Error("Path to destination not found!");
 }
