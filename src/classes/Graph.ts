@@ -84,6 +84,7 @@ export default class Graph {
               id: i.toString() + "-" + j.toString(),
               source: i.toString(),
               target: j.toString(),
+              label: this.getWeight(i, j),
             },
           });
       }

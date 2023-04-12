@@ -9,6 +9,9 @@ import Map from "../api/Leaflet";
 import { coordinate, mapEdge } from "../classes/Graph";
 
 // var cytoscape = require("cytoscape");
+import Button from "./Button";
+import uniformCostSearch from "../functions/UniformCostSearch";
+import aStar from "../functions/AStar";
 
 export default function App(): JSX.Element {
   const [isGmap, setGmap] = useState<boolean>(false);
@@ -21,6 +24,11 @@ export default function App(): JSX.Element {
   const [pathMethod, setPathMethod] = useState<string>("A*");
   const [nodeList, setNodeList] = useState<coordinate[]>([]);
   const [edgeList, setEdgeList] = useState<mapEdge[]>([]);
+  const [graphPath, setGraphPath] = useState<number[]>([]);
+  const [pathDist, setPathDist] = useState<number>(0);
+  const [pathStr, setPathStr] = useState<string>("");
+  const [fileErrorMsg, setFileErrorMsg] = useState<string>("");
+  const [searchErrorMsg, setSearchErrorMsg] = useState<string>("");
 
   useEffect(() => {
     const newNodeOptions = [{ value: "none", text: "None Selected" }];
@@ -42,17 +50,60 @@ export default function App(): JSX.Element {
 
   // TODO: error message
   const handleFileChange = (file: File) => {
+    if (!file.name.endsWith(".txt")) {
+      setFileErrorMsg("Files should end with .txt!");
+      return;
+    }
     const reader = new FileReader();
 
     reader.onload = () => {
-      setGraph(fileReader(reader.result as string));
+      try {
+        setGraph(fileReader(reader.result as string));
+        setFileErrorMsg("");
+      } catch (error: any) {
+        setFileErrorMsg(error.message);
+      }
     };
 
     reader.readAsText(file);
   };
 
+  const handleSearch = () => {
+    let dist = 0;
+    let path: number[] = [];
+
+    try {
+      if (sourceNode === "none" || destNode === "none")
+        throw Error("Please set your source and destination nodes!");
+
+      if (pathMethod === "A*" && graph)
+        [dist, path] = aStar(parseInt(sourceNode), parseInt(destNode), graph);
+      if (pathMethod === "UCS" && graph)
+        [dist, path] = uniformCostSearch(
+          parseInt(sourceNode),
+          parseInt(destNode),
+          graph
+        );
+    } catch (error: any) {
+      setSearchErrorMsg(error.message);
+      return;
+    }
+
+    setGraphPath(path);
+    setPathDist(dist);
+
+    let str = "";
+    for (let idx = 1; idx < path.length; idx++) {
+      str += graph?.getStreetName(path[idx - 1], path[idx]);
+      if (idx !== path.length - 1) str += " - ";
+    }
+
+    setPathStr(str);
+    setSearchErrorMsg("");
+  };
+
   return (
-    <main>
+    <main className="pb-4">
       <div className="bg-[#94C5CC] w-full py-4 px-9">
         <h1 className="text-[#000100] font-black text-4xl">PathFinder</h1>
       </div>
@@ -100,7 +151,15 @@ export default function App(): JSX.Element {
             File Input
           </h2>
           <Dropzone id="file-dropzone" onFileChange={handleFileChange} />
-          <div className="flex flex-col mt-6 gap-3">
+          <p
+            className={clsx(
+              "text-sm text-red-600",
+              fileErrorMsg === "" && "invisible"
+            )}
+          >
+            {fileErrorMsg} Please choose another file.
+          </p>
+          <div className="flex flex-col mt-4 gap-3">
             <Dropdown
               label="Source Node"
               value={sourceNode}
@@ -129,6 +188,26 @@ export default function App(): JSX.Element {
               ]}
             />
           </div>
+          <div className="flex mt-5 gap-2">
+            <Button onClick={handleSearch}>Start Search</Button>
+            <p
+              className={clsx(
+                "text-sm text-red-600 flex-1",
+                searchErrorMsg === "" && "invisible"
+              )}
+            >
+              {searchErrorMsg}
+            </p>
+          </div>
+          {graphPath.length > 0 && (
+            <div className="text-[#000100] text-xl  my-4">
+              <h2 className="font-black text-3xl">Result</h2>
+              <h4 className="font-bold mt-4">Shortest Path</h4>
+              <p>{pathStr}</p>
+              <h4 className="font-bold mt-4">Distance:</h4>
+              <p>{pathDist}</p>
+            </div>
+          )}
         </div>
       </div>
     </main>
