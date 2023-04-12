@@ -9,13 +9,13 @@ function constructPath(
   start: number,
   end: number,
   parent_node: number[],
-  g_score: number[]
+  graph: Graph
 ): [number, number[]] {
   let dist = 0;
   let graphPath = [end];
 
   while (end !== start) {
-    dist += g_score[end];
+    dist += graph.getWeight(end, parent_node[end]);
     graphPath.unshift(parent_node[end]);
     end = parent_node[end];
   }
